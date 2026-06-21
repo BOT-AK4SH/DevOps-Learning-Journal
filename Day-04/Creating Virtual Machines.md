@@ -1,4 +1,4 @@
-# Day 4 Notes – AWS & Azure: Creating Virtual Machines
+# AWS & Azure: Creating Virtual Machines
 
 # 1.Topics for today
 
