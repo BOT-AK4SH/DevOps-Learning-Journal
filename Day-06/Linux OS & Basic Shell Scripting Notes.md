@@ -17,7 +17,7 @@ An **Operating System (OS)** acts as a bridge between **hardware** and **softwar
 * Microsoft word
 * VLC media player
 * Jenkins
-* Games 
+* Video games 
 * Java applications
 
 ### Communication Flow
