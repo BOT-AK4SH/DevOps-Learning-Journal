@@ -1,5 +1,3 @@
-``markdown
-
 ## Shell Scripting Basics (Part 2)
 
 ---
