@@ -1,6 +1,4 @@
-Shell Scripting Basics (Part 1)
-
-## Detailed Notes
+## Shell Scripting Basics (Part 1)
 
 ### Introduction to Shell Scripting
 
