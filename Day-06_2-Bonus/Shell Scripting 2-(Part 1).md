@@ -1,10 +1,7 @@
-# Day 07 - Advanced Shell Scripting Concepts
+# Advanced Shell Scripting Concepts (Part 1)
 
-# Detailed Notes (Part 1)
 
----
-
-# Advanced Shell Scripting
+## Advanced Shell Scripting
 
 Advanced shell scripting focuses on writing **readable, maintainable, reusable, and production-ready Bash scripts**. Instead of writing simple commands sequentially, scripts should follow best practices such as proper documentation, debugging support, error handling, and structured execution.
 
