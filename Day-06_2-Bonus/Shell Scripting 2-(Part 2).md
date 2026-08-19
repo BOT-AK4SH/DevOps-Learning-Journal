@@ -1,8 +1,5 @@
-# Day 07 - Advanced Shell Scripting Concepts
+# Advanced Shell Scripting Concepts (Part 2)
 
-## Detailed Notes (Part 2)
-
----
 
 # Extracting Specific Information with `awk`
 
