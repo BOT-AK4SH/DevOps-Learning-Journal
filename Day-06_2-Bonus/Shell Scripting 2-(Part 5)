@@ -1,0 +1,735 @@
+# Day 07 - Advanced Shell Scripting Concepts
+
+## Quick Revision Notes
+
+### Shell Script Best Practices
+
+* Use a proper **shebang** to specify the Bash interpreter:
+
+```bash
+#!/bin/bash
+```
+
+* Add metadata comments to explain:
+
+  * Author
+  * Date
+  * Version
+  * Purpose
+  * Prerequisites
+
+* Use `echo` statements to make script output easier to understand.
+
+* Use `set -x` when command execution tracing is required.
+
+* Use `set -e` to stop execution on applicable unhandled command failures.
+
+* Use `set -o pipefail` so failures within pipelines are not silently hidden.
+
+* Scripts should be readable, reusable, and version-controlled.
+
+---
+
+### Linux Node Health
+
+Important commands for checking basic server health:
+
+```bash
+df -h
+free -g
+nproc
+top
+```
+
+* `df -h` → Disk utilization
+* `free -g` → Memory information
+* `nproc` → Number of available processing units
+* `top` → Real-time process and resource utilization
+
+A reusable node-health script can automate these checks.
+
+---
+
+### Process Management
+
+List all running processes in full format:
+
+```bash
+ps -ef
+```
+
+Filter a particular process:
+
+```bash
+ps -ef | grep amazon
+```
+
+Extract only its PID field:
+
+```bash
+ps -ef | grep amazon | awk '{print $2}'
+```
+
+A **PID (Process ID)** uniquely identifies a running process.
+
+---
+
+### Pipe Operator
+
+The pipe:
+
+```bash
+|
+```
+
+connects the **stdout of the first command** to the **stdin of the second command**.
+
+Example:
+
+```bash
+ps -ef | grep amazon
+```
+
+Flow:
+
+```text
+ps -ef → stdout → | → stdin → grep amazon
+```
+
+Multiple commands can be chained:
+
+```bash
+ps -ef | grep amazon | awk '{print $2}'
+```
+
+---
+
+### Standard Streams
+
+Linux processes commonly use three standard streams:
+
+| Stream   | Purpose         | File Descriptor |
+| -------- | --------------- | --------------: |
+| `stdin`  | Standard Input  |             `0` |
+| `stdout` | Standard Output |             `1` |
+| `stderr` | Standard Error  |             `2` |
+
+A pipe normally transfers **stdout → stdin**.
+
+---
+
+### Important Pipe Interview Concept
+
+This does **not** append the date to the text:
+
+```bash
+date | echo "Today is"
+```
+
+`echo` does not consume its normal output text from stdin.
+
+To include the output of `date`, use command substitution:
+
+```bash
+echo "Today is $(date)"
+```
+
+---
+
+### `grep` vs `awk`
+
+**`grep`** filters matching lines:
+
+```bash
+grep error application.log
+```
+
+**`awk`** processes structured text and can extract fields:
+
+```bash
+awk '{print $2}'
+```
+
+Together:
+
+```bash
+ps -ef | grep amazon | awk '{print $2}'
+```
+
+---
+
+### Shell Script Error Handling
+
+Enable fail-fast behavior:
+
+```bash
+set -e
+```
+
+Detect failures inside pipelines:
+
+```bash
+set -o pipefail
+```
+
+Enable command tracing:
+
+```bash
+set -x
+```
+
+A common structure is:
+
+```bash
+#!/bin/bash
+
+set -x
+set -e
+set -o pipefail
+```
+
+---
+
+### Log Analysis
+
+Search a local log:
+
+```bash
+grep error application.log
+```
+
+Retrieve a remote log and filter errors:
+
+```bash
+curl <log-url> | grep error
+```
+
+Log analysis is a common DevOps troubleshooting activity when applications, services, or workloads fail.
+
+---
+
+### `curl` vs `wget`
+
+Retrieve remote content:
+
+```bash
+curl <URL>
+```
+
+Download a resource:
+
+```bash
+wget <URL>
+```
+
+General distinction:
+
+* **`curl`** → Commonly used for APIs, HTTP requests, data transfer, and pipelines.
+* **`wget`** → Commonly used for downloading files.
+
+---
+
+### Finding Files
+
+Search for a file:
+
+```bash
+find / -name "file.txt"
+```
+
+With elevated privileges:
+
+```bash
+sudo find / -name "file.txt"
+```
+
+Use `sudo` only when the required directories cannot be accessed with normal user permissions.
+
+---
+
+### `sudo` and `su`
+
+Run a command with elevated privileges:
+
+```bash
+sudo command
+```
+
+Switch user:
+
+```bash
+su username
+```
+
+Start a root login shell when permitted:
+
+```bash
+sudo su -
+```
+
+Avoid unnecessary use of unrestricted root access.
+
+---
+
+### Conditional Statements
+
+Basic `if-else` structure:
+
+```bash
+if [ condition ]
+then
+    commands
+else
+    commands
+fi
+```
+
+Example:
+
+```bash
+if [ "$a" -gt "$b" ]
+then
+    echo "A is greater"
+else
+    echo "B is greater"
+fi
+```
+
+---
+
+### `for` Loops
+
+Use loops to automate repetitive operations.
+
+```bash
+for i in {1..10}
+do
+    echo "$i"
+done
+```
+
+Useful when an operation must be repeated across multiple values or resources.
+
+---
+
+### Linux Signals and `trap`
+
+`Ctrl+C` normally generates:
+
+```text
+SIGINT
+```
+
+A script can define a custom handler:
+
+```bash
+trap 'echo "Interrupt received"' SIGINT
+```
+
+`trap` is useful for:
+
+* Handling interruptions
+* Cleanup
+* Removing temporary resources
+* Executing custom actions before termination
+
+`SIGKILL` cannot be trapped.
+
+---
+
+# Key Terms and Definitions
+
+| Term                      | Definition                                                                                    |
+| ------------------------- | --------------------------------------------------------------------------------------------- |
+| **Shell**                 | Command-line environment used to interact with the operating system.                          |
+| **Bash**                  | Bourne Again Shell, a widely used Unix/Linux shell and scripting language.                    |
+| **Shell Script**          | File containing commands executed by a shell.                                                 |
+| **Shebang**               | First line of a script that identifies its interpreter, such as `#!/bin/bash`.                |
+| **Metadata**              | Information describing a script, such as author, purpose, date, and version.                  |
+| **Debugging**             | Process of identifying and troubleshooting problems in scripts.                               |
+| **`set -x`**              | Bash option that enables execution tracing.                                                   |
+| **`set -e`**              | Bash option that exits on applicable unhandled command failures.                              |
+| **`pipefail`**            | Bash option that allows failures within a pipeline to affect its exit status.                 |
+| **Process**               | A running instance of a program.                                                              |
+| **PID**                   | Process ID; numeric identifier assigned to a running process.                                 |
+| **Pipe (`\|`)**           | Connects one command's stdout to another command's stdin.                                     |
+| **stdin**                 | Standard Input; file descriptor `0`.                                                          |
+| **stdout**                | Standard Output; file descriptor `1`.                                                         |
+| **stderr**                | Standard Error; file descriptor `2`.                                                          |
+| **`grep`**                | Utility used to find lines matching a pattern.                                                |
+| **`awk`**                 | Pattern-scanning and text-processing tool commonly used for field extraction.                 |
+| **Log File**              | File containing events, messages, warnings, and errors generated by an application or system. |
+| **`curl`**                | Command-line utility for transferring data and interacting with URLs/APIs.                    |
+| **`wget`**                | Utility commonly used to download remote resources.                                           |
+| **`find`**                | Command used to recursively search directories.                                               |
+| **`sudo`**                | Executes permitted commands with elevated or another user's privileges.                       |
+| **`su`**                  | Command used to switch to another user account.                                               |
+| **Root User**             | Linux administrative account with extensive system privileges.                                |
+| **Conditional Statement** | Logic that executes different commands depending on whether a condition is true or false.     |
+| **Loop**                  | Programming structure that repeatedly executes commands.                                      |
+| **Signal**                | Notification sent to a process indicating an event or requested action.                       |
+| **SIGINT**                | Interrupt signal commonly generated by `Ctrl+C`.                                              |
+| **SIGKILL**               | Signal 9, which immediately terminates a process and cannot be caught or ignored.             |
+| **`trap`**                | Bash builtin used to execute commands when specified signals or shell events occur.           |
+
+---
+
+# Important Commands
+
+## 1. Specify Bash Interpreter
+
+```bash
+#!/bin/bash
+```
+
+Defines Bash as the script interpreter.
+
+---
+
+## 2. Give Script Execute Permission
+
+```bash
+chmod +x script.sh
+```
+
+Makes the script executable.
+
+The transcript also demonstrates:
+
+```bash
+chmod 777 script.sh
+```
+
+However, `777` grants permissions broadly and should not be used routinely. Grant only the permissions actually required.
+
+---
+
+## 3. Execute a Script
+
+```bash
+./script.sh
+```
+
+Runs an executable script from the current directory.
+
+---
+
+## 4. Check Disk Usage
+
+```bash
+df -h
+```
+
+Displays filesystem disk usage in human-readable units.
+
+---
+
+## 5. Check Memory
+
+```bash
+free -g
+```
+
+Displays memory information in gigabytes.
+
+---
+
+## 6. Check CPU Count
+
+```bash
+nproc
+```
+
+Displays the number of processing units available to the current process.
+
+---
+
+## 7. Monitor Processes and Resources
+
+```bash
+top
+```
+
+Displays real-time process, CPU, memory, and system-load information.
+
+---
+
+## 8. Print Output
+
+```bash
+echo "Checking node health"
+```
+
+Displays text in the terminal.
+
+---
+
+## 9. Enable Debug Tracing
+
+```bash
+set -x
+```
+
+Displays commands as Bash executes them.
+
+---
+
+## 10. Exit on Applicable Errors
+
+```bash
+set -e
+```
+
+Provides fail-fast behavior for many unhandled command failures.
+
+---
+
+## 11. Detect Pipeline Failures
+
+```bash
+set -o pipefail
+```
+
+Prevents earlier failures in a pipeline from being hidden by a successful final command.
+
+---
+
+## 12. List Processes
+
+```bash
+ps -ef
+```
+
+Displays all processes using full-format output.
+
+---
+
+## 13. Filter Output
+
+```bash
+grep "pattern" file
+```
+
+Example:
+
+```bash
+grep error application.log
+```
+
+Displays lines matching `error`.
+
+---
+
+## 14. Pipe Commands
+
+```bash
+command1 | command2
+```
+
+Passes `command1`'s stdout to `command2`'s stdin.
+
+Example:
+
+```bash
+ps -ef | grep amazon
+```
+
+---
+
+## 15. Extract Fields with `awk`
+
+```bash
+awk '{print $2}'
+```
+
+Prints the second field.
+
+Example:
+
+```bash
+ps -ef | grep amazon | awk '{print $2}'
+```
+
+---
+
+## 16. Retrieve Remote Content
+
+```bash
+curl <URL>
+```
+
+Retrieves data from a URL.
+
+---
+
+## 17. Make an HTTP GET Request
+
+```bash
+curl -X GET <URL>
+```
+
+Explicitly performs an HTTP GET request.
+
+---
+
+## 18. Retrieve and Filter Remote Logs
+
+```bash
+curl <log-url> | grep error
+```
+
+Retrieves a remote log and immediately filters error entries.
+
+---
+
+## 19. Download a Remote Resource
+
+```bash
+wget <URL>
+```
+
+Downloads a remote resource, commonly to a local file.
+
+---
+
+## 20. Search for Files
+
+```bash
+find / -name "filename"
+```
+
+Recursively searches from `/` for the specified name.
+
+---
+
+## 21. Search with Elevated Privileges
+
+```bash
+sudo find / -name "filename"
+```
+
+Runs the search with appropriate elevated privileges.
+
+---
+
+## 22. Switch User
+
+```bash
+su username
+```
+
+Starts a shell as another user, subject to authentication and permissions.
+
+---
+
+## 23. Start a Root Login Shell
+
+```bash
+sudo su -
+```
+
+Starts a root login shell when the current user has the required sudo privileges.
+
+---
+
+## 24. Numeric Comparison
+
+```bash
+[ "$a" -gt "$b" ]
+```
+
+Checks whether `a` is numerically greater than `b`.
+
+---
+
+## 25. Bash `for` Loop
+
+```bash
+for i in {1..100}
+do
+    echo "$i"
+done
+```
+
+Repeats the commands for values from `1` through `100`.
+
+---
+
+## 26. Terminate a Process with SIGKILL
+
+```bash
+kill -9 PID
+```
+
+Sends `SIGKILL` to the specified process.
+
+Example:
+
+```bash
+kill -9 1111
+```
+
+Because SIGKILL prevents graceful cleanup, it should generally be reserved for situations where less forceful termination is insufficient.
+
+---
+
+## 27. Handle a Signal with `trap`
+
+```bash
+trap 'echo "Interrupt received"' SIGINT
+```
+
+Executes the specified action when Bash receives `SIGINT`.
+
+---
+
+## Important Command Pipeline to Remember
+
+```bash
+ps -ef | grep amazon | awk '{print $2}'
+```
+
+This demonstrates three fundamental Linux concepts together:
+
+```text
+ps -ef
+   │
+   ▼
+List Processes
+   │
+   ▼
+grep amazon
+   │
+   ▼
+Filter Matching Processes
+   │
+   ▼
+awk '{print $2}'
+   │
+   ▼
+Extract PID
+```
+
+---
+
+# Key Takeaways
+
+* **Shell scripting is an essential DevOps automation skill** for system administration, monitoring, troubleshooting, and repetitive operational tasks.
+* Use the correct **shebang** such as `#!/bin/bash` when writing Bash-specific scripts.
+* Document scripts with meaningful **metadata** so other engineers can understand and maintain them.
+* `df -h`, `free -g`, `nproc`, and `top` provide important information about Linux node health.
+* Use **`set -x`** for execution tracing and debugging.
+* Use **`set -e`** and **`set -o pipefail`** to improve script failure handling.
+* **`ps -ef`** lists processes, **`grep`** filters matching lines, and **`awk`** extracts specific fields.
+* The **pipe (`|`)** connects one command's stdout to another command's stdin.
+* `curl` is particularly useful for **HTTP requests, APIs, remote content, and pipelines**.
+* `wget` is commonly used when a remote resource needs to be **downloaded locally**.
+* Application **logs are a primary troubleshooting source** when services fail.
+* Use **`find`** when a file's location is unknown.
+* Use **`sudo`** only when elevated privileges are required and avoid unnecessary root access.
+* **`if-else`** statements allow scripts to make decisions.
+* **`for` loops** automate repetitive operations.
+* Linux communicates with processes using **signals**.
+* **`trap`** allows Bash scripts to respond to selected signals and perform actions such as cleanup.
+* **SIGKILL (`kill -9`) cannot be trapped or ignored**.
+* Combining Linux commands into pipelines is one of the most important shell-scripting techniques for DevOps automation.
