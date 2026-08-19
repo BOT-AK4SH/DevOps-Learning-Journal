@@ -1,5 +1,3 @@
-# Day 07 - Advanced Shell Scripting Concepts
-
 ## Scenario-Based Interview Questions and Answers
 
 ### 1. A Linux server is running slowly. How would you perform an initial health check?
