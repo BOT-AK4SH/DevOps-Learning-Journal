@@ -1,4 +1,4 @@
-# Day 07 - Advanced Shell Scripting Concepts
+# Advanced Shell Scripting Concepts
 
 ## Interview Questions and Answers
 
