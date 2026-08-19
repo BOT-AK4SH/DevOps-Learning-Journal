@@ -7,7 +7,7 @@ Advanced shell scripting focuses on writing **readable, maintainable, reusable, 
 
 ---
 
-# Revision of Basic Shell Scripting
+## Revision of Basic Shell Scripting
 
 Before moving to advanced concepts, it is important to understand the basic shell script structure.
 
@@ -36,7 +36,7 @@ chmod +x script.sh
 
 ---
 
-# Node Health Monitoring Script
+## Node Health Monitoring Script
 
 One practical DevOps use case is checking the health of a Linux server (Node).
 
