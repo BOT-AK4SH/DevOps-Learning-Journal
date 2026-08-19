@@ -1,4 +1,4 @@
-# Day 07 - AWS Resource Tracker Using Shell Scripting
+# AWS Resource Tracker Using Shell Scripting
 
 ## Detailed Notes
 
