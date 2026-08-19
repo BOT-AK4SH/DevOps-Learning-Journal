@@ -1,8 +1,7 @@
-## Shell Scripting Basics (Part 2)
+# Shell Scripting Basics (Part 2)
 
----
 
-# Writing Inside a File Using `vi`
+## Writing Inside a File Using `vi`
 
 Unlike graphical text editors, `vi` works in different modes. You cannot start typing immediately after opening a file.
 
