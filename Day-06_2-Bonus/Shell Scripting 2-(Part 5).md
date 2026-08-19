@@ -1,5 +1,3 @@
-# Day 07 - Advanced Shell Scripting Concepts
-
 ## Quick Revision Notes
 
 ### Shell Script Best Practices
