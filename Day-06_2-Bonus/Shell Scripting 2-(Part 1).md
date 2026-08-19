@@ -60,7 +60,7 @@ This script prints:
 
 ---
 
-# Important Commands for Node Health
+## Important Commands for Node Health
 
 ## 1. Disk Usage
 
