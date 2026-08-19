@@ -1,6 +1,6 @@
-## Shell Scripting Basics (Part 1)
+# Shell Scripting Basics (Part 1)
 
-### Introduction to Shell Scripting
+## Introduction to Shell Scripting
 
 Shell scripting is one of the most important skills for a **DevOps Engineer**. Almost every DevOps tool runs on Linux, and Linux automation is primarily achieved through shell scripts.
 
