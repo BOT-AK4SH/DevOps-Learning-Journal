@@ -1,0 +1,548 @@
+# Day 07 - Advanced Shell Scripting Concepts
+
+## Scenario-Based Interview Questions and Answers
+
+### 1. A Linux server is running slowly. How would you perform an initial health check?
+
+**Answer:**
+I would first check the main system resources:
+
+```bash
+df -h
+free -g
+nproc
+top
+```
+
+* `df -h` → Check disk utilization.
+* `free -g` → Check memory utilization.
+* `nproc` → Check available CPU count.
+* `top` → Identify processes consuming high CPU or memory.
+
+This provides a quick overview of the node's health before deeper troubleshooting.
+
+---
+
+### 2. Your server's disk is almost full. Which command would you use first?
+
+**Answer:**
+
+```bash
+df -h
+```
+
+I would use `df -h` to identify which filesystem or mounted disk has high utilization. The `-h` option displays sizes in a human-readable format.
+
+---
+
+### 3. An application is consuming excessive CPU. How would you identify the process?
+
+**Answer:**
+I would start with:
+
+```bash
+top
+```
+
+This provides real-time CPU and memory utilization by process.
+
+I could also inspect processes using:
+
+```bash
+ps -ef
+```
+
+and filter for a known application:
+
+```bash
+ps -ef | grep application_name
+```
+
+---
+
+### 4. Your manager asks you to provide only the PIDs of Amazon-related processes. How would you retrieve them?
+
+**Answer:**
+
+```bash
+ps -ef | grep amazon | awk '{print $2}'
+```
+
+The pipeline works in stages:
+
+1. `ps -ef` lists processes.
+2. `grep amazon` filters matching rows.
+3. `awk '{print $2}'` extracts the PID column.
+
+---
+
+### 5. A server contains hundreds of processes, and you need to check whether a specific application is running. What would you do?
+
+**Answer:**
+
+```bash
+ps -ef | grep application_name
+```
+
+For example:
+
+```bash
+ps -ef | grep java
+```
+
+The pipe sends the process list to `grep`, which filters lines containing the required process name.
+
+---
+
+### 6. You wrote a 200-line Bash script, but you cannot determine which command is causing unexpected behavior. How would you debug it?
+
+**Answer:**
+I would enable command tracing:
+
+```bash
+set -x
+```
+
+For example:
+
+```bash
+#!/bin/bash
+
+set -x
+
+df -h
+free -g
+nproc
+```
+
+Bash will display commands as they are executed, making it easier to identify where the problem occurs.
+
+---
+
+### 7. Your automation script fails at step 5 but continues executing the remaining steps. How would you prevent this?
+
+**Answer:**
+I would enable:
+
+```bash
+set -e
+```
+
+This provides fail-fast behavior for applicable unhandled command failures, preventing many cases where later operations execute after an earlier failure.
+
+For critical operations, I would also use explicit error handling where necessary.
+
+---
+
+### 8. Your script uses pipelines, but `set -e` is not detecting an earlier command failure. What should you do?
+
+**Answer:**
+I would enable `pipefail`:
+
+```bash
+set -e
+set -o pipefail
+```
+
+Without `pipefail`, the exit status of a pipeline normally depends on its last command.
+
+For example:
+
+```bash
+invalid_command | echo "Completed"
+```
+
+The final `echo` succeeds and can hide the earlier failure.
+
+With:
+
+```bash
+set -o pipefail
+```
+
+the pipeline reports the failure appropriately.
+
+---
+
+### 9. You need debugging, fail-fast behavior, and pipeline error detection in the same script. How would you configure it?
+
+**Answer:**
+
+```bash
+set -x
+set -e
+set -o pipefail
+```
+
+* `set -x` → Command tracing
+* `set -e` → Exit on applicable unhandled failures
+* `set -o pipefail` → Detect pipeline failures
+
+Keeping them on separate lines also makes individual options easier to disable.
+
+---
+
+### 10. A production script contains sensitive commands that should not appear in logs. Would you leave `set -x` enabled?
+
+**Answer:**
+No. `set -x` prints commands and expanded arguments during execution, so it can expose sensitive information.
+
+I would disable tracing when it is unnecessary:
+
+```bash
+# set -x
+```
+
+Debug tracing should be used carefully, especially in production scripts.
+
+---
+
+### 11. An application has failed, and its log file contains thousands of lines. How would you quickly find error messages?
+
+**Answer:**
+
+```bash
+grep error application.log
+```
+
+This filters the log and displays matching lines instead of manually reviewing the entire file.
+
+---
+
+### 12. The application log is stored remotely and accessible through a URL. You only need the error entries. What would you do?
+
+**Answer:**
+
+```bash
+curl <log-url> | grep error
+```
+
+`curl` retrieves the remote content, and `grep` immediately filters it for error-related lines.
+
+This avoids manually downloading and opening the file.
+
+---
+
+### 13. You need to download a remote log file and keep a local copy for later analysis. Would you use `curl` or `wget`?
+
+**Answer:**
+For the workflow covered here, I would use:
+
+```bash
+wget <log-url>
+```
+
+`wget` commonly downloads the resource directly to a local file.
+
+I could then analyze it:
+
+```bash
+grep error downloaded.log
+```
+
+If I only wanted to process the remote content immediately without keeping it locally, `curl` would be convenient:
+
+```bash
+curl <log-url> | grep error
+```
+
+---
+
+### 14. You need to test whether an application's API endpoint is responding. Which command could you use?
+
+**Answer:**
+
+```bash
+curl -X GET https://api.example.com
+```
+
+`curl` is commonly used from Linux systems and shell scripts to interact with HTTP APIs and troubleshoot endpoints.
+
+---
+
+### 15. You know the name of a configuration file but not its location on the server. How would you find it?
+
+**Answer:**
+
+```bash
+find / -name "config-file"
+```
+
+This starts searching from the root filesystem.
+
+If some directories require elevated privileges:
+
+```bash
+sudo find / -name "config-file"
+```
+
+---
+
+### 16. `find / -name "app.conf"` produces many "Permission denied" messages. What is the issue?
+
+**Answer:**
+The current user does not have permission to search some directories.
+
+If I have appropriate privileges, I can run:
+
+```bash
+sudo find / -name "app.conf"
+```
+
+I would use elevated privileges only when necessary.
+
+---
+
+### 17. You need elevated privileges for only one administrative command. Would you switch completely to the root user?
+
+**Answer:**
+Usually, no. I would run only the required command with `sudo`.
+
+For example:
+
+```bash
+sudo find / -name "app.conf"
+```
+
+This limits unnecessary use of a privileged root shell.
+
+---
+
+### 18. Your script should perform an action only when one numeric value is greater than another. How would you implement it?
+
+**Answer:**
+
+```bash
+a=10
+b=5
+
+if [ "$a" -gt "$b" ]
+then
+    echo "A is greater than B"
+else
+    echo "B is greater than or equal to A"
+fi
+```
+
+Bash conditional statements allow scripts to make decisions based on runtime conditions.
+
+---
+
+### 19. You need to execute the same operation 100 times. Would you manually repeat the command?
+
+**Answer:**
+No. I would use a `for` loop.
+
+```bash
+for i in {1..100}
+do
+    echo "$i"
+done
+```
+
+Loops eliminate repetitive code and are important for automation.
+
+---
+
+### 20. A script should perform the same operation for several values. Which shell construct would you use?
+
+**Answer:**
+I would use a `for` loop:
+
+```bash
+for item in value1 value2 value3
+do
+    echo "$item"
+done
+```
+
+The shell processes each value sequentially and executes the commands inside the loop.
+
+---
+
+### 21. A long-running script must perform a custom action when someone presses `Ctrl+C`. How would you implement this?
+
+**Answer:**
+I would use `trap` to handle `SIGINT`.
+
+```bash
+trap 'echo "Interrupt received"' SIGINT
+```
+
+`Ctrl+C` normally generates `SIGINT` for the foreground process. The trap allows the script to execute a custom handler.
+
+---
+
+### 22. A script creates temporary resources. If the script is interrupted, those resources should be cleaned up. Which concept would you use?
+
+**Answer:**
+I would use `trap` to execute cleanup logic when an appropriate signal or shell event occurs.
+
+For example:
+
+```bash
+trap 'rm -f temporary-file.txt' SIGINT
+```
+
+This allows the script to perform cleanup rather than simply terminating without handling the interruption.
+
+---
+
+### 23. Can you use `trap` to prevent `kill -9` from terminating your script?
+
+**Answer:**
+No.
+
+```bash
+kill -9 PID
+```
+
+sends **SIGKILL**, and `SIGKILL` cannot be caught, blocked, or ignored.
+
+Therefore, a handler such as this cannot intercept SIGKILL:
+
+```bash
+trap 'echo "Caught"' SIGKILL
+```
+
+This is an important Linux interview concept.
+
+---
+
+### 24. An engineer runs `date | echo "Today is"` and expects the date to appear after the text. Why doesn't it work?
+
+**Answer:**
+A pipe sends the **stdout of `date`** to the **stdin of `echo`**.
+
+However, `echo` prints its command-line arguments and does not normally consume that piped input.
+
+Therefore:
+
+```bash
+date | echo "Today is"
+```
+
+prints:
+
+```text
+Today is
+```
+
+If the goal is to insert command output into a string, use command substitution:
+
+```bash
+echo "Today is $(date)"
+```
+
+---
+
+### 25. You need to filter a process and then extract one particular column. Which combination of commands would you use?
+
+**Answer:**
+I would combine `grep`, `awk`, and pipes.
+
+```bash
+ps -ef | grep process_name | awk '{print $2}'
+```
+
+`grep` selects matching rows, while `awk` extracts the required field.
+
+---
+
+### 26. You inherit a shell script from another engineer. The file contains only commands and provides no explanation of its purpose. What improvement would you recommend?
+
+**Answer:**
+I would add metadata comments at the beginning:
+
+```bash
+#!/bin/bash
+
+# Author: DevOps Team
+# Date: 01-Dec-2025
+# Version: v1.0
+# Purpose: Check Linux node health
+# Prerequisites: Bash
+```
+
+This makes the script easier for other engineers to understand and maintain.
+
+---
+
+### 27. You frequently receive requests to check Linux server health. How would you avoid manually executing the same commands every time?
+
+**Answer:**
+I would create a reusable node-health script.
+
+```bash
+#!/bin/bash
+
+set -e
+set -o pipefail
+
+echo "Disk Usage"
+df -h
+
+echo "Memory"
+free -g
+
+echo "CPU Count"
+nproc
+
+echo "Processes"
+ps -ef
+```
+
+The script can be version-controlled and reused whenever basic server-health information is required.
+
+---
+
+### 28. Your script produces output, but users cannot identify which output belongs to which health check. How would you improve readability?
+
+**Answer:**
+I would add descriptive `echo` statements.
+
+```bash
+echo "Disk Space:"
+df -h
+
+echo "Memory:"
+free -g
+
+echo "CPU:"
+nproc
+```
+
+For troubleshooting during development, I could additionally enable:
+
+```bash
+set -x
+```
+
+This provides both readable labels and execution tracing.
+
+---
+
+## Scenario Interview Quick Reference
+
+| Scenario                             | Primary Command/Concept |
+| ------------------------------------ | ----------------------- |
+| Check disk usage                     | `df -h`                 |
+| Check memory                         | `free -g`               |
+| Check CPU count                      | `nproc`                 |
+| Monitor resource-consuming processes | `top`                   |
+| List processes                       | `ps -ef`                |
+| Find a specific process              | `grep`                  |
+| Extract PID/column                   | `awk`                   |
+| Connect commands                     | Pipe (`\|`)             |
+| Debug a script                       | `set -x`                |
+| Stop after applicable failures       | `set -e`                |
+| Detect pipeline failures             | `set -o pipefail`       |
+| Search application logs              | `grep`                  |
+| Retrieve remote content/API          | `curl`                  |
+| Download remote file                 | `wget`                  |
+| Locate files                         | `find`                  |
+| Run privileged command               | `sudo`                  |
+| Conditional execution                | `if-else`               |
+| Repetitive execution                 | `for` loop              |
+| Handle signals                       | `trap`                  |
+| Forcefully terminate process         | `kill -9 PID`           |
