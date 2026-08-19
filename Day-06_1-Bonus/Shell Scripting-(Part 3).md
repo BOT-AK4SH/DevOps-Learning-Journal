@@ -1,6 +1,6 @@
 ## Interview Questions & Answers
 
-## Level -Beginner
+## Level - Beginner
 
 ### 1. What is Shell Scripting?
 
