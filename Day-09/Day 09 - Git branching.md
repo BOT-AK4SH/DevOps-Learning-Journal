@@ -191,17 +191,20 @@ If the hotfix is omitted from main, a later release created from main may reintr
 flowchart TB
     A["Main / Master / Trunk"]
     B["Feature Branch"]
-    C["Release Branch"]
-    D["Customer Release"]
-    E["Hotfix Branch"]
+    C["Main - Feature Merged"]
+    D["Release Branch"]
+    E["Customer Release"]
+    F["Hotfix Branch"]
+    G["Patched Release"]
+    H["Main - Hotfix Merged"]
 
-    A -->|"Create"| B
-    B -->|"Test and merge"| A
-    A -->|"Cut stable version"| C
-    C -->|"Build and ship"| D
-    C -->|"Production issue"| E
-    E -->|"Patch supported release"| C
-    E -->|"Synchronize fix"| A
+    A -->|"Create feature"| B
+    B -->|"Test and merge"| C
+    C -->|"Cut stable version"| D
+    D -->|"Build and ship"| E
+    E -->|"Production issue"| F
+    F -->|"Patch release"| G
+    F -->|"Synchronize fix"| H
 ~~~
 
 The normal sequence is:
