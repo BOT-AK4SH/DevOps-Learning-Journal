@@ -187,7 +187,7 @@ If the hotfix is omitted from main, a later release created from main may reintr
 
 ### 9. Overall Branching Workflow
 
-flowchart TB
+    flowchart TB
     M["Main / Master / Trunk"]
 
     M -->|"Create feature"| F["Feature Branch"]
