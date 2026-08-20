@@ -187,7 +187,8 @@ If the hotfix is omitted from main, a later release created from main may reintr
 
 ### 9. Overall Branching Workflow
 
-    flowchart TB
+```mermaid
+flowchart TB
     M["Main / Master / Trunk"]
 
     M -->|"Create feature"| F["Feature Branch"]
@@ -199,6 +200,7 @@ If the hotfix is omitted from main, a later release created from main may reintr
 
     H -->|"Patch release"| P["Patched Release"]
     H -->|"Synchronize fix"| M3["Main - Hotfix Merged"]
+```
 
 The normal sequence is:
 
