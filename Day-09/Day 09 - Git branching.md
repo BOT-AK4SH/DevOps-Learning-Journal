@@ -187,7 +187,7 @@ If the hotfix is omitted from main, a later release created from main may reintr
 
 ### 9. Overall Branching Workflow
 
-block-beta
+~~~block-beta
     columns 3
 
     F["Feature Branch"] M["Main / Master / Trunk"] R["Release Branch"]
@@ -202,6 +202,7 @@ block-beta
     C -- "Production issue" --> H
     H -- "Patch release" --> P
     H -- "Synchronize fix" --> M3
+~~~
 
 The normal sequence is:
 
