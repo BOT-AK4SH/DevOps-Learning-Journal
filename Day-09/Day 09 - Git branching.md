@@ -187,25 +187,21 @@ If the hotfix is omitted from main, a later release created from main may reintr
 
 ### 9. Overall Branching Workflow
 
-~~~mermaid
-flowchart TB
-    A["Main / Master / Trunk"]
-    B["Feature Branch"]
-    C["Main - Feature Merged"]
-    D["Release Branch"]
-    E["Customer Release"]
-    F["Hotfix Branch"]
-    G["Patched Release"]
-    H["Main - Hotfix Merged"]
+block-beta
+    columns 3
 
-    A -->|"Create feature"| B
-    B -->|"Test and merge"| C
-    C -->|"Cut stable version"| D
-    D -->|"Build and ship"| E
-    E -->|"Production issue"| F
-    F -->|"Patch release"| G
-    F -->|"Synchronize fix"| H
-~~~
+    F["Feature Branch"] M["Main / Master / Trunk"] R["Release Branch"]
+    space M2["Main - Feature Merged"] C["Customer Release"]
+    space H["Hotfix Branch"] space
+    P["Patched Release"] space M3["Main - Hotfix Merged"]
+
+    M -- "Create feature" --> F
+    F -- "Test and merge" --> M2
+    M2 -- "Cut stable version" --> R
+    R -- "Build and ship" --> C
+    C -- "Production issue" --> H
+    H -- "Patch release" --> P
+    H -- "Synchronize fix" --> M3
 
 The normal sequence is:
 
